@@ -94,19 +94,19 @@ def checkingBlockValidity(block , parent , state ):
 # Is each transaction a valid update to the system state?
 # Is Block hash valid for the block contents?
 # Does block number go up by one compared to the parent block number? # Is the parent block 's hash referenced properly?
-prevblockNumber = parent[u'blockContent'][u'blockNum'] prevHash = prevBlock[u'hash']
-blockNumber = block[u'blockContent'][u'blockNum']
+	prevblockNumber = parent[u'blockContent'][u'blockNum'] prevHash = prevBlock[u'hash']
+	blockNumber = block[u'blockContent'][u'blockNum']
 # Checking transaction validity ; if an invalid transaction −> error . for txn in block['contents']['txns']:
-if isValidTxn(txn, state):
-    state = updateState(txn, state)
-else:
-    raise Exception ('Invalid transaction in block %s : %s' %(blockNum, txn))
-    checkingBlockHash(block) # Checks hashes −> error i f not accurate
-if blockNumber != (prevNumber + 1) :
-    raise Exception('Hash does not match contents of block %s' %(blockNum)
-if block['blockContent']['prevHash'] != prevHash:
-    raise Exception ('Previous hash inaccurate at block %s' %(blockNum)
-return state
+	if isValidTxn(txn, state):
+		state = updateState(txn, state)
+	else:
+		raise Exception ('Invalid transaction in block %s : %s' %(blockNum, txn))
+    		checkingBlockHash(block) # Checks hashes −> error i f not accurate
+	if blockNumber != (prevNumber + 1) :
+    		raise Exception('Hash does not match contents of block %s' %(blockNum)
+	if block['blockContent']['prevHash'] != prevHash:
+		raise Exception ('Previous hash inaccurate at block %s' %(blockNum)
+	return state
 
 
 makeBlock("Mana fere xrima", genBlock)
