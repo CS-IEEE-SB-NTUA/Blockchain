@@ -82,12 +82,12 @@ def updateState(txn , state):
 # Returns: Updated state but no validation of transaction only_
 # update the state
 # If the transaction == valid −> update the state
-state = state.copy () # Creates a working for key in txn :
-if key in state.keys():
-    state[key] += txn[key]
-else:
-    state[key] = txn[key]
-return state
+	state = state.copy () # Creates a working for key in txn :
+	if key in state.keys():
+		state[key] += txn[key]
+	else:
+		state[key] = txn[key]
+	return state
 
 def checkingBlockValidity(block , parent , state ):
 # Checking following conditions :
