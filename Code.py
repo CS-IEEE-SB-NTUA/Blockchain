@@ -3,7 +3,13 @@ from operator import ge
 import random
 import time
 import hashlib
-def newHash(msg=""): return hashlib.sha256(str(msg).encode('utf-8')).hexdigest()
+
+names = ["Adam", "NikosSf", "Thanasis", "Vaggelis", "Mary", "Stella", "NikosG", "Dimitris"]
+
+
+def newHash(msg=""): 
+	return hashlib.sha256(str(msg).encode('utf-8')).hexdigest()
+
 
 genBlockContent = {u'blockNum' : 0, u'prevHash': None, u'txtLen' : 1, u'transText' : None}
 genBlockHash = newHash(genBlockContent)
@@ -23,6 +29,24 @@ def makeBlock(transText, prevBlock):
 
 makeBlock("Mana fere xrima", genBlock)
 print(chain)
+
+for i in range (5):
+  makeTrans(5)
+
+
+def makeTrans(maxValue):  
+  members = random.choices(names, k=2)
+  payer = members[0]
+  receiver = members[1]
+  if (payer == receiver):
+    return makeTrans(maxValue)
+  amountRec = random.randint(1,maxValue)
+  amountPay = -1*amountRec
+  if(random.randint(1,10) == 5) :
+    amountRec += 1
+  print(f"Random transaction : {payer} pays {receiver} {-1*amountPay} HuskIEEEs and {receiver} receives {amountRec}")
+  return {u'payer':amountPay, u'receiver': amountRec}
+
 
 def checkingBlockHash (block) :
 # Exception raised if the hash is no match to the block contents
@@ -79,5 +103,46 @@ def checkingBlockValidity(block , parent , state ):
 	if block['blockContent']['prevHash'] != prevHash:
 		raise Exception ('Previous hash inaccurate at block %s' % blockNum)
 	return state
+
+
+def checkChain(chain):
+    # Work through the chain from the genesis block (which gets special treatment), 
+    #  checking that all transactions are internally valid,
+    #    that the transactions do not cause an overdraft,
+    #    and that the blocks are linked by their hashes.
+    # This returns the state as a dictionary of accounts and balances,
+    #   or returns False if an error was detected
+
+    
+    ## Data input processing: Make sure that our chain is a list of dicts
+    if type(chain)==str:
+        try:
+            chain = json.loads(chain)
+            assert( type(chain)==list)
+        except:  # This is a catch-all, admittedly crude
+            return False
+    elif type(chain)!=list:
+        return False
+    
+    state = {}
+    ## Prime the pump by checking the genesis block
+    # We want to check the following conditions:
+    # - Each of the transactions are valid updates to the system state
+    # - Block hash is valid for the block contents
+
+    for txn in chain[0]['contents']['txns']:
+        state = updateState(txn,state)
+    checkBlockHash(chain[0])
+    parent = chain[0]
+    
+    ## Checking subsequent blocks: These additionally need to check
+    #    - the reference to the parent block's hash
+    #    - the validity of the block number
+    for block in chain[1:]:
+        state = checkBlockValidity(block,parent,state)
+        parent = block
+        
+    return state
+
 
 
