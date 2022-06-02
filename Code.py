@@ -67,16 +67,17 @@ def checkingBlockValidity(block , parent , state ):
 	prevblockNumber = parent[u'blockContent'][u'blockNum'] 
 	prevHash = parent[u'hash']
 	blockNumber = block[u'blockContent'][u'blockNum']
-# Checking transaction validity ; if an invalid transaction −> error . for txn in block['contents']['txns']:
-	if isValidTxn(txn, state):
-		state = updateState(txn, state)
-	else:
-		raise Exception ('Invalid transaction in block %s : %s' % (blockNum, txn))
-	checkingBlockHash(block) # Checks hashes −> error i f not accurate
-	if blockNumber != (prevNumber + 1) :
-		raise Exception('Hash does not match contents of block %s' %_ blockNum)
-	if block['blockContent']['prevHash'] != prevHash:
-		raise Exception ('Previous hash inaccurate at block %s' % blockNum)
-	return state
+# Checking transaction validity ; if an invalid transaction −> error . 
+	for txn in block['contents']['txns']:
+		if isValidTxn(txn, state):
+			state = updateState(txn, state)
+		else:
+			raise Exception ('Invalid transaction in block %s : %s' % (blockNum, txn))
+		checkingBlockHash(block) # Checks hashes −> error i f not accurate
+		if blockNumber != (prevNumber + 1) :
+			raise Exception('Hash does not match contents of block %s' %_ blockNum)
+		if block['blockContent']['prevHash'] != prevHash:
+			raise Exception ('Previous hash inaccurate at block %s' % blockNum)
+		return state
 
 
