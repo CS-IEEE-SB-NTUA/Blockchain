@@ -51,6 +51,7 @@ def updateState(txn , state):
 # Returns: Updated state but no validation of transaction only
 # update the state
 # If the transaction == valid −> update the state
+
 	state = state.copy () # Creates a working for key in txn :
 	if key in state.keys():
 		state[key] += txn[key]
@@ -64,7 +65,7 @@ def checkingBlockValidity(block , parent , state ):
 # Is Block hash valid for the block contents?
 # Does block number go up by one compared to the parent block number? # Is the parent block 's hash referenced properly?
 	prevblockNumber = parent[u'blockContent'][u'blockNum'] 
-	prevHash = prevBlock[u'hash']
+	prevHash = parent[u'hash']
 	blockNumber = block[u'blockContent'][u'blockNum']
 # Checking transaction validity ; if an invalid transaction −> error . for txn in block['contents']['txns']:
 	if isValidTxn(txn, state):
@@ -78,14 +79,4 @@ def checkingBlockValidity(block , parent , state ):
 		raise Exception ('Previous hash inaccurate at block %s' % blockNum)
 	return state
 
-def updateState(txn , state):
-# Inputs: transfer amount (txn) and account balance (state)
-# Returns: Updated state but no validation of transaction only_
-# update the state
-# If the transaction == valid −> update the state
-	state = state.copy () # Creates a working for key in txn :
-	if key in state.keys():
-		state[key] += txn[key]
-	else:
-		state[key] = txn[key]
-	return state
+
